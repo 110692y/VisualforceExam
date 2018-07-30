@@ -1,0 +1,111 @@
+<apex:page id="passExam" showHeader="false" controller="PassExamController" standardStylesheets="false">
+    <head>
+        <style>
+            .bodyCenter {
+                margin: auto;
+                background-color: #CDFF96;
+                text-align: center;
+                font-family: 'Arial Unicode MS';
+            }
+
+            h3, h2, h1 {
+                color: #FF6352;
+                text-shadow: 0px 1px 1px rgba(0, 0, 0, 1);
+            }
+
+            .examTable {
+                background-color: #E6FFCC;
+                color: darkslategrey;
+                align: center;
+                vertical-align: middle;
+                margin: 0 auto;
+                line-height: 35px;
+                border-radius: 15px !important;
+            }
+
+            .examTable tr:hover {
+                background-color: #ABFF75;
+            }
+
+            td {
+                border-top: 1px solid darkslategrey;
+                border-bottom: 1px solid darkslategrey;
+            }
+
+            .question {
+                text-align: left;
+                /*padding: 1em;*/
+            }
+
+            .button {
+                height: 40px;
+                background-color: #FF6352;
+                color: whitesmoke;
+                border-radius: 10px;
+                border: 0px solid white;
+            }
+        </style>
+    </head>
+    <body class="bodyCenter" style="width: 80%">
+    <apex:form id="form">
+        <apex:image style="border-radius: 8px;"
+                    url="https://cdn1.iconfinder.com/data/icons/university-set-1/512/16-512.png" width="100px"/>
+        <br/>
+        <h2>Exams repository</h2>
+        <hr/>
+        <apex:outputPanel layout="block" rendered="{!!passed}">
+            <h3> {!exam.name} <br/>Enter correct answer and click Next: </h3>
+            <apex:inputField value="{!passedExam.UserInput__c}"
+                             style="width: 2em; height: 2em;font-size:5em;border:1px; border-radius:20%;text-align:center;"/>
+            <br/>
+
+        </apex:outputPanel>
+        <apex:outputPanel id='questionList' layout="block" rendered="{!!passed}">
+            <table class="examTable">
+                <apex:variable value="{!1}" var="index"/>
+                <tr>
+                    <td width="50%">Question</td>
+                    <td width="10%">Answer A</td>
+                    <td width="10%">Answer B</td>
+                    <td width="10%">Answer C</td>
+                    <td width="10%">Answer D</td>
+                    <td width="10%">Your Answer</td>
+                </tr>
+                <apex:repeat var="question" value="{!questions}">
+                    <tr style="display: {!IF(passedExam.Question_Number__c==index,'table-row','none' )}">
+                        <td styleClass="question" width="50%">{!question.Question__c} {!index}</td>
+                        <td width="10%">{!question.AnswerA__c}</td>
+                        <td width="10%">{!question.AnswerB__c}</td>
+                        <td width="10%">{!question.AnswerC__c}</td>
+                        <td width="10%">{!question.AnswerD__c}</td>
+                        <td width="10%">
+
+                            <apex:commandButton styleClass="button" value="Submit and Next" action="{!checkAnswer}"
+                                                reRender="form">
+                                <apex:param name="questionId" value="{!question.id}" assignTo="{!questionIdChosen}"/>
+                            </apex:commandButton>
+                        </td>
+                    </tr>
+                    <apex:variable var="index" value="{!index+1}"/>
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!passed}" layout="inline"><br/><br/>
+            Congratulations! <br/>
+                {!passedExam.Count_correct_answers__c}
+            is correct!
+            <br/>
+            <apex:commandButton styleClass="button" value="To Exams List" action="{!goHome}"></apex:commandButton>
+        </apex:outputPanel>
+
+        <apex:commandButton rendered="{!!passed}" styleClass="button" action="{!save}"
+                            value="Сдать!"></apex:commandButton>
+        <!--Question # {!passedExam.Question_Number__c} <br/>-->
+        <!--Current Question var: {!questionIdChosen} <br/>-->
+        <!--Correct: {!passedExam.Count_correct_answers__c} <br/>-->
+        <!--Your input: {!passedExam.UserInput__c}-->
+    </apex:form>
+    </body>
+</apex:page>
+

@@ -1,0 +1,76 @@
+<apex:page id="Home" controller="HomeController" standardStylesheets="false" applyHtmlTag="false" showHeader="false">
+    <head>
+        <style>
+            .bodyCenter {
+                margin: auto;
+                background-color: #CDFF96;
+                text-align: center;
+                font-family: 'Arial Unicode MS';
+            }
+
+            h3, h2 {
+                color: #FF6352;
+                text-shadow: 0px 1px 1px rgba(0, 0, 0, 1);
+            }
+
+            .button {
+                height: 40px;
+                background-color: #FF6352;
+                color: whitesmoke;
+                border-radius: 15%;
+                border: 0px solid white;
+            }
+
+            .examTable {
+                background-color: #E6FFCC;
+                color: darkslategrey;
+                align: center;
+                vertical-align: middle;
+                margin: 0 auto;
+                line-height: 35px;
+                border-radius: 15px;
+            }
+
+            .examTable tr:hover {
+                background-color: #ABFF75;
+            }
+        </style>
+    </head>
+    <body class="bodyCenter">
+    <apex:form>
+        <apex:image style="border-radius: 8px;"
+                    url="https://cdn1.iconfinder.com/data/icons/university-set-1/512/16-512.png" width="100px"/>
+        <br/>
+        <apex:outputPanel layout="block" rendered="{!!creation}">
+            <h3>Exam List:</h3>
+            <apex:dataTable styleClass="examTable" value="{!exams}" var="exam" width="50%" align="center">
+                <apex:column headerValue="Name / Edit" width="30%">
+                    <apex:outputPanel><a style="text-decoration: none;color: darkslategrey;"
+                                         href="/apex/EditExam?id={!exam.Id}">{!exam.Name} </a></apex:outputPanel>
+                </apex:column>
+                <apex:column headerValue="Name / Pass" width="30%">
+                    <apex:outputPanel><a style="text-decoration: none;color: darkslategrey;"
+                                         href="/apex/PassExam?id={!exam.Id}">{!exam.Name} </a></apex:outputPanel>
+                </apex:column>
+                <apex:column headerValue="Questions" width="15%" value="{!exam.Count_Questions__c}"></apex:column>
+                <apex:column headerValue="Owner" width="25%" value="{!exam.owner.name}"></apex:column>
+            </apex:dataTable>
+        </apex:outputPanel>
+        <br/>
+        <apex:commandButton rendered="{!!creation}" styleClass="button" value="Create New" action="{!turnOnCreation}"/>
+    </apex:form>
+
+    <apex:form rendered="{!creation}">
+        <h3>Enter name of new Exam:</h3>
+        <table align="center">
+            <tr>
+                <td>
+                    <apex:inputField value="{!exam.Name}"></apex:inputField>
+                </td>
+            </tr>
+        </table>
+        <br/>
+        <apex:commandButton value="Save and Edit" styleClass="button" action="{!save}"/>
+    </apex:form>
+    </body>
+</apex:page>
